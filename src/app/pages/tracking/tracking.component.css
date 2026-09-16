@@ -1,0 +1,417 @@
+.tracking-page-root {
+  padding: 28px 0 60px;
+}
+
+/* Top Card */
+.tracking-top-card {
+  background: linear-gradient(135deg, #094713 0%, #0c831f 60%, #159c2a 100%);
+  border-radius: 24px;
+  padding: 32px;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 28px;
+  box-shadow: 0 12px 36px rgba(12, 131, 31, 0.3);
+}
+
+.top-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+
+.pulse-beacon {
+  width: 8px;
+  height: 8px;
+  background: #25d366;
+  border-radius: 50%;
+  animation: pulseGlow 1.5s infinite;
+}
+
+.eta-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+}
+
+.eta-timer {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.time-digit {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3.8rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.time-unit {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  opacity: 0.85;
+}
+
+.eta-status {
+  font-size: 1.05rem;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+/* Layout */
+.tracking-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 28px;
+}
+
+/* Live GPS Map Card */
+.live-map-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.map-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-radar-dot {
+  width: 9px;
+  height: 9px;
+  background: #0c831f;
+  border-radius: 50%;
+  animation: pulseGlow 1.5s infinite;
+}
+
+.map-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111418;
+}
+
+.speed-pill {
+  background: #e8f7ec;
+  color: #0c831f;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.map-viewport {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.map-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.animated-route {
+  animation: dashRoad 1.5s linear infinite;
+}
+
+@keyframes dashRoad {
+  from { stroke-dashoffset: 28; }
+  to { stroke-dashoffset: 0; }
+}
+
+.animated-bike-group {
+  offset-path: path('M 40 180 Q 180 60, 320 150 T 560 70');
+  animation: moveBikePath 10s ease-in-out infinite alternate;
+}
+
+.bike-glow-circle {
+  box-shadow: 0 0 12px #0c831f;
+}
+
+@keyframes moveBikePath {
+  0% {
+    offset-distance: 10%;
+  }
+  100% {
+    offset-distance: 85%;
+  }
+}
+
+/* OTP Card */
+.otp-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.otp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.otp-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.otp-title span {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.otp-title small {
+  font-size: 0.78rem;
+  color: #657786;
+  margin-top: 2px;
+}
+
+.otp-copy-btn {
+  background: #f1f4f8;
+  color: #0c831f;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+.otp-digits {
+  display: flex;
+  gap: 12px;
+}
+
+.pin-digit {
+  flex: 1;
+  background: #f4f8f4;
+  border: 2px solid #0c831f;
+  border-radius: 12px;
+  padding: 12px 0;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #0c831f;
+}
+
+/* Timeline */
+.timeline-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.card-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+.timeline-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+.step-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.step-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.step-item.completed .step-icon {
+  background: #e8f7ec;
+  color: #0c831f;
+}
+
+.step-item.active .step-icon {
+  background: #0c831f;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(12, 131, 31, 0.4);
+}
+
+.step-item.pending .step-icon {
+  background: #f1f4f8;
+  color: #8899a6;
+}
+
+.step-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #111418;
+}
+
+.step-time {
+  font-size: 0.8rem;
+  color: #657786;
+  margin-top: 2px;
+}
+
+/* Rider Card */
+.rider-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.rider-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.rider-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #e8f7ec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+
+.rider-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111418;
+}
+
+.rider-badge {
+  font-size: 0.75rem;
+  color: #0c831f;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.rider-vehicle {
+  font-size: 0.82rem;
+  color: #657786;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.call-rider-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0c831f;
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(12, 131, 31, 0.25);
+}
+
+/* Address Card */
+.address-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.addr-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.addr-text {
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.landmark-pill {
+  display: inline-block;
+  background: #f1f4f8;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: #0c831f;
+  font-weight: 600;
+}
+
+.back-store-btn {
+  display: block;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #0c831f;
+  padding: 12px;
+  text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .tracking-layout {
+    grid-template-columns: 1fr;
+  }
+}

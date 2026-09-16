@@ -1,0 +1,75 @@
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+}
+
+/* Mobile Bottom Navigation Bar */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 8px 16px (calc(8px + env(safe-area-inset-bottom)));
+  z-index: 2500;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+  justify-content: space-around;
+  align-items: center;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #657786;
+  text-decoration: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  position: relative;
+  transition: color 0.18s ease;
+}
+
+.mobile-nav-item:hover, .mobile-nav-item.active {
+  color: #0c831f;
+}
+
+.m-icon {
+  font-size: 20px;
+}
+
+.mobile-nav-item.cart-item {
+  color: #0c831f;
+}
+
+.m-badge {
+  position: absolute;
+  top: -4px;
+  right: 6px;
+  background: #ffc107;
+  color: #111;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 50%;
+  border: 1.5px solid #fff;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+  }
+  .app-main {
+    padding-bottom: 70px;
+  }
+}

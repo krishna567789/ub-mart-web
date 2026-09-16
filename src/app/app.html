@@ -1,0 +1,51 @@
+<div class="app-shell">
+  <!-- Sticky Glassmorphic Header -->
+  <app-header></app-header>
+
+  <!-- Routed Page View -->
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Premium Brand Footer -->
+  <app-footer></app-footer>
+
+  <!-- Global Slide-Out Cart Drawer -->
+  <app-cart-drawer></app-cart-drawer>
+
+  <!-- Global Instant Search Modal -->
+  <app-search-modal></app-search-modal>
+
+  <!-- Global Delivery Location Modal -->
+  <app-location-modal></app-location-modal>
+
+  <!-- Global Toast Alerts -->
+  <app-toast></app-toast>
+
+  <!-- Mobile Bottom Floating Navigation Bar -->
+  <nav class="mobile-bottom-nav">
+    <a routerLink="/" class="mobile-nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <span class="m-icon">🏠</span>
+      <span class="m-label">Home</span>
+    </a>
+    <a routerLink="/categories" class="mobile-nav-item" routerLinkActive="active">
+      <span class="m-icon">🥦</span>
+      <span class="m-label">Categories</span>
+    </a>
+    <button class="mobile-nav-item" (click)="openSearch()">
+      <span class="m-icon">🔍</span>
+      <span class="m-label">Search</span>
+    </button>
+    <a routerLink="/tracking" class="mobile-nav-item" routerLinkActive="active">
+      <span class="m-icon">🛵</span>
+      <span class="m-label">Track</span>
+    </a>
+    <button class="mobile-nav-item cart-item" (click)="toggleCart()">
+      <span class="m-icon">🛒</span>
+      @if (cartService.totalCount() > 0) {
+        <span class="m-badge">{{ cartService.totalCount() }}</span>
+      }
+      <span class="m-label">₹{{ cartService.itemTotal() }}</span>
+    </button>
+  </nav>
+</div>
