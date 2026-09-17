@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { CartItem, CartSummary } from '../models/cart.model';
-import { Product, ProductVariant } from '../models/product.model';
+import { Product, ProductVariant, getVariantPackSize } from '../models/product.model';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -17,6 +17,7 @@ export class CartService {
   readonly tip = signal<number>(0);
   readonly appliedCoupon = signal<string | null>(null);
   readonly couponDiscount = signal<number>(0);
+  readonly isAnimating = signal<boolean>(false);
 
   // Computed Values
   readonly totalCount = computed(() =>
@@ -109,7 +110,7 @@ export class CartService {
     const targetVariant = variant || product.variants?.[0] || { packSize: 'Standard', price: 100 };
     const current = [...this.items()];
     const index = current.findIndex(
-      i => i.product._id === product._id && i.variant.packSize === targetVariant.packSize
+      i => i.product._id === product._id && getVariantPackSize(i.variant) === getVariantPackSize(targetVariant)
     );
 
     if (index > -1) {
@@ -125,12 +126,18 @@ export class CartService {
       });
     }
     this.items.set(current);
+    this.triggerAnimation();
+  }
+
+  private triggerAnimation(): void {
+    this.isAnimating.set(true);
+    setTimeout(() => this.isAnimating.set(false), 400);
   }
 
   updateQuantity(productId: string, packSize: string, delta: number): void {
     const current = [...this.items()];
     const index = current.findIndex(
-      i => i.product._id === productId && i.variant.packSize === packSize
+      i => i.product._id === productId && getVariantPackSize(i.variant) === packSize
     );
 
     if (index > -1) {
@@ -149,7 +156,7 @@ export class CartService {
 
   removeItem(productId: string, packSize: string): void {
     const filtered = this.items().filter(
-      i => !(i.product._id === productId && i.variant.packSize === packSize)
+      i => !(i.product._id === productId && getVariantPackSize(i.variant) === packSize)
     );
     this.items.set(filtered);
   }
@@ -157,7 +164,7 @@ export class CartService {
   getItemQuantity(productId: string, packSize?: string): number {
     const target = this.items().find(i => {
       if (packSize) {
-        return i.product._id === productId && i.variant.packSize === packSize;
+        return i.product._id === productId && getVariantPackSize(i.variant) === packSize;
       }
       return i.product._id === productId;
     });

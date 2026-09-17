@@ -1,0 +1,65 @@
+.fc-wrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 990;
+  cursor: pointer;
+  padding: 20px; /* gives an invisible bounding box for mousemove capture */
+  margin: -20px;
+}
+
+.fc-magnet {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--primary-color);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 30px;
+  box-shadow: 0 8px 32px rgba(var(--primary-rgb), 0.4);
+  transition: transform 0.2s cubic-bezier(0.1, 0.8, 0.3, 1), box-shadow 0.2s;
+  position: relative;
+}
+
+.fc-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff3b30;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--bg-surface);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.fc-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.fc-text span {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.fc-text small {
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .fc-wrapper {
+    bottom: 20px;
+    right: 20px;
+  }
+}

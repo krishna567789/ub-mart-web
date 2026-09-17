@@ -2,11 +2,13 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { ToastService } from '../../core/services/toast.service';
+import { CommonModule } from '@angular/common';
+import { Order } from '../../core/models/order.model';
 
 @Component({
   selector: 'app-tracking',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   template: `
     <div class="tracking-page-root">
       <div class="container">
@@ -23,7 +25,11 @@ import { ToastService } from '../../core/services/toast.service';
               <span class="time-digit">{{ minutes() }}:{{ seconds() }}</span>
               <span class="time-unit">MINS</span>
             </div>
-            <p class="eta-status">Rider Rahul Kumar is speeding to your address 🛵💨</p>
+            @if(order()?.assignedRider) {
+              <p class="eta-status">Rider {{ order()!.assignedRider.name }} is speeding to your address 🛵💨</p>
+            } @else {
+              <p class="eta-status">Assigning a rider to your order 🛵💨</p>
+            }
           </div>
         </div>
 
@@ -61,7 +67,7 @@ import { ToastService } from '../../core/services/toast.service';
                   <!-- Destination Marker -->
                   <circle cx="560" cy="70" r="16" fill="#ff3b30" />
                   <text x="560" y="75" fill="#fff" font-size="12" text-anchor="middle">🏠</text>
-                  <text x="560" y="102" fill="#333" font-size="11" font-weight="bold" text-anchor="middle">Gomti Nagar Home</text>
+                  <text x="560" y="102" fill="#333" font-size="11" font-weight="bold" text-anchor="middle">Delivery Location</text>
 
                   <!-- Animated Moving Bike Marker -->
                   <g class="animated-bike-group">
@@ -73,27 +79,28 @@ import { ToastService } from '../../core/services/toast.service';
             </div>
 
             <!-- Delivery Handover OTP Card -->
-            <div class="otp-card">
-              <div class="otp-header">
-                <div class="otp-title">
-                  <span>Safe Delivery Handover PIN</span>
-                  <small>Share this 4-digit code with your rider upon arrival</small>
+            @if (order()?.otp) {
+              <div class="otp-card">
+                <div class="otp-header">
+                  <div class="otp-title">
+                    <span>Safe Delivery Handover PIN</span>
+                    <small>Share this 4-digit code with your rider upon arrival</small>
+                  </div>
+                  <button class="otp-copy-btn" (click)="copyPin(order()!.otp!)">Copy PIN</button>
                 </div>
-                <button class="otp-copy-btn" (click)="copyPin()">Copy PIN</button>
+                <div class="otp-digits">
+                  @for (digit of order()!.otp!.split(''); track $index) {
+                    <span class="pin-digit">{{ digit }}</span>
+                  }
+                </div>
               </div>
-              <div class="otp-digits">
-                <span class="pin-digit">7</span>
-                <span class="pin-digit">2</span>
-                <span class="pin-digit">9</span>
-                <span class="pin-digit">1</span>
-              </div>
-            </div>
+            }
 
             <!-- 5-Step Order Timeline -->
             <div class="timeline-card">
               <h3 class="card-title">Live Order Timeline</h3>
               <div class="timeline-steps">
-                <div class="step-item completed">
+                <div class="step-item" [class.completed]="order()?.status !== 'PENDING'" [class.active]="order()?.status === 'PENDING'">
                   <div class="step-icon">✓</div>
                   <div class="step-content">
                     <div class="step-name">Order Placed & Confirmed</div>
@@ -101,23 +108,23 @@ import { ToastService } from '../../core/services/toast.service';
                   </div>
                 </div>
 
-                <div class="step-item completed">
-                  <div class="step-icon">✓</div>
+                <div class="step-item" [class.completed]="order()?.status === 'OUT_FOR_DELIVERY' || order()?.status === 'DELIVERED'" [class.active]="order()?.status === 'PACKING'">
+                  <div class="step-icon">📦</div>
                   <div class="step-content">
                     <div class="step-name">Items Packed & Quality Sealed</div>
                     <div class="step-time">Temperature controlled hygienic packing</div>
                   </div>
                 </div>
 
-                <div class="step-item active">
+                <div class="step-item" [class.completed]="order()?.status === 'DELIVERED'" [class.active]="order()?.status === 'OUT_FOR_DELIVERY'">
                   <div class="step-icon">🛵</div>
                   <div class="step-content">
                     <div class="step-name">Out for Delivery (Express Speed)</div>
-                    <div class="step-time">Rider is 1.1 km away (near Riverside Mall intersection)</div>
+                    <div class="step-time">Rider is on the way</div>
                   </div>
                 </div>
 
-                <div class="step-item pending">
+                <div class="step-item" [class.completed]="order()?.status === 'DELIVERED'" [class.pending]="order()?.status !== 'DELIVERED'">
                   <div class="step-icon">🏁</div>
                   <div class="step-content">
                     <div class="step-name">Arrived & Handed Over</div>
@@ -131,33 +138,39 @@ import { ToastService } from '../../core/services/toast.service';
           <!-- Right: Delivery Partner Card & Delivery Address -->
           <div class="tracking-side">
             <!-- Rider Profile Card -->
-            <div class="rider-card">
-              <div class="rider-header">
-                <div class="rider-avatar">🛵</div>
-                <div class="rider-info">
-                  <div class="rider-name">Rahul Kumar</div>
-                  <div class="rider-badge">🛡️ Verified UB Express Rider • ★ 4.9</div>
+            @if (order()?.assignedRider) {
+              <div class="rider-card">
+                <div class="rider-header">
+                  <div class="rider-avatar">🛵</div>
+                  <div class="rider-info">
+                    <div class="rider-name">{{ order()!.assignedRider.name }}</div>
+                    <div class="rider-badge">🛡️ Verified UB Express Rider</div>
+                  </div>
+                </div>
+
+                <div class="rider-vehicle">
+                  <span>Vehicle: {{ order()!.assignedRider.vehicleModel || 'Electric EV Bike' }} ({{ order()!.assignedRider.vehiclePlate || 'N/A' }})</span>
+                </div>
+
+                <div class="rider-actions">
+                  <a [href]="'tel:' + (order()!.assignedRider.phone || '')" class="call-rider-btn">
+                    <span>📞 Call Rider</span>
+                  </a>
                 </div>
               </div>
-
-              <div class="rider-vehicle">
-                <span>Vehicle: Electric EV Bike (UP 32 AB 4598)</span>
-              </div>
-
-              <div class="rider-actions">
-                <a href="tel:+919876543210" class="call-rider-btn">
-                  <span>📞 Call Rider</span>
-                </a>
-              </div>
-            </div>
+            }
 
             <!-- Delivery Address Card -->
             <div class="address-card">
               <h4 class="addr-title">Delivery Location</h4>
-              <p class="addr-text">Flat 402, Green Valley Apartments, Gomti Nagar, Lucknow</p>
-              <div class="landmark-pill">
-                <span>📍 Near Eldeco Green Gate</span>
-              </div>
+              <p class="addr-text">
+                {{ order()?.deliveryAddress?.apartment }}, {{ order()?.deliveryAddress?.street }}, {{ order()?.deliveryAddress?.city }}
+              </p>
+              @if (order()?.deliveryAddress?.landmark) {
+                <div class="landmark-pill">
+                  <span>📍 {{ order()?.deliveryAddress?.landmark }}</span>
+                </div>
+              }
             </div>
 
             <!-- Return To Store -->
@@ -174,11 +187,23 @@ export class TrackingComponent implements OnInit {
   private apiService = inject(ApiService);
   private toastService = inject(ToastService);
 
+  order = signal<Order | null>(null);
+  isLoading = signal(true);
   minutes = signal<string>('08');
   seconds = signal<string>('42');
   private timer: any;
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.fetchOrder(id);
+      } else {
+        // Fallback: Fetch a default active order or show empty
+        this.fetchOrder('active');
+      }
+    });
+
     let remaining = 8 * 60 + 42;
     this.timer = setInterval(() => {
       remaining--;
@@ -190,8 +215,21 @@ export class TrackingComponent implements OnInit {
     }, 1000);
   }
 
-  copyPin(): void {
-    navigator.clipboard.writeText('7291');
-    this.toastService.show('📋 PIN 7291 copied to clipboard!', 'success', '🔑');
+  fetchOrder(id: string) {
+    this.isLoading.set(true);
+    this.apiService.getOrderById(id).subscribe({
+      next: (data) => {
+        if (data) {
+          this.order.set(data);
+        }
+        this.isLoading.set(false);
+      },
+      error: () => this.isLoading.set(false)
+    });
+  }
+
+  copyPin(pin: string): void {
+    navigator.clipboard.writeText(pin);
+    this.toastService.show(`📋 PIN ${pin} copied!`, 'success', '🔑');
   }
 }

@@ -3,6 +3,8 @@ import { RouterLink } from '@angular/router';
 import { HeroBannerComponent } from '../../components/hero-banner/hero-banner.component';
 import { CategoryBarComponent } from '../../components/category-bar/category-bar.component';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
+import { ActiveOrderCardComponent } from '../../components/active-order-card/active-order-card.component';
+import { ScrollRevealDirective } from '../../core/directives/scroll-reveal.directive';
 import { ApiService } from '../../core/services/api.service';
 import { Product } from '../../core/models/product.model';
 import { HomepageSection } from '../../core/models/category.model';
@@ -14,7 +16,9 @@ import { HomepageSection } from '../../core/models/category.model';
     RouterLink,
     HeroBannerComponent,
     CategoryBarComponent,
-    ProductCardComponent
+    ProductCardComponent,
+    ActiveOrderCardComponent,
+    ScrollRevealDirective
   ],
   template: `
     <div class="home-page-root">
@@ -24,8 +28,15 @@ import { HomepageSection } from '../../core/models/category.model';
       <!-- 2. Explore Aisles & Categories -->
       <app-category-bar></app-category-bar>
 
+      <!-- Active Order Dashboard Card -->
+      @if (activeOrder()) {
+        <div class="container" style="margin-top: 16px;">
+          <app-active-order-card [order]="activeOrder()"></app-active-order-card>
+        </div>
+      }
+
       <!-- 3. Flash Deals Row with Live Countdown Timer -->
-      <section class="section-row flash-deals-section">
+      <section class="section-row flash-deals-section" appScrollReveal>
         <div class="container">
           <div class="deals-header-card">
             <div class="deals-header-left">
@@ -48,14 +59,14 @@ import { HomepageSection } from '../../core/models/category.model';
           <!-- Products Grid -->
           @if (isLoadingProducts()) {
             <div class="products-skeleton-grid">
-              @for (n of [1,2,3,4]; track n) {
+              @for (n of [1,2,3,4,5,6]; track n) {
                 <div class="product-skeleton-card skeleton"></div>
               }
             </div>
           } @else {
             <div class="products-grid">
-              @for (prod of flashDeals(); track prod._id) {
-                <app-product-card [product]="prod"></app-product-card>
+              @for (prod of flashDeals(); track prod._id; let i = $index) {
+                <app-product-card [product]="prod" class="stagger-enter" [style.animation-delay.ms]="i * 50"></app-product-card>
               }
             </div>
           }
@@ -65,7 +76,7 @@ import { HomepageSection } from '../../core/models/category.model';
       <!-- 4. Dynamic Live App Sections from MongoDB (/api/homepage) -->
       @for (sec of dynamicSections(); track sec._id) {
         @if (getSectionProducts(sec).length > 0) {
-          <section class="section-row dynamic-section">
+          <section class="section-row dynamic-section" appScrollReveal>
             <div class="container">
               <div class="section-heading">
                 <div>
@@ -82,8 +93,8 @@ import { HomepageSection } from '../../core/models/category.model';
 
               <!-- Product Row Carousel -->
               <div class="horizontal-product-scroll">
-                @for (prod of getSectionProducts(sec); track prod._id) {
-                  <div class="scroll-card-item">
+                @for (prod of getSectionProducts(sec); track prod._id; let i = $index) {
+                  <div class="scroll-card-item stagger-enter" [style.animation-delay.ms]="i * 50">
                     <app-product-card [product]="prod"></app-product-card>
                   </div>
                 }
@@ -94,34 +105,28 @@ import { HomepageSection } from '../../core/models/category.model';
       }
 
       <!-- 5. Mid-Page Visual Promo Banner -->
-      <section class="mid-promo-section">
+      <section class="mid-promo-section" appScrollReveal>
         <div class="container">
           <div class="promo-banner-split">
-            <div class="promo-card promo-fresh">
-              <div class="promo-content">
-                <span class="promo-pill">🌱 100% ORGANIC</span>
-                <h3>Farm Direct Veggies & Fresh Fruits</h3>
-                <p>Crisp spinach, vine tomatoes & sweet apples delivered at dawn.</p>
-                <a routerLink="/categories" class="promo-btn">Explore Produce →</a>
+            @for (promo of promoBanners(); track promo._id) {
+              <div class="promo-card">
+                <div class="promo-content">
+                  <span class="promo-pill" [style.background-color]="promo.themeColor || 'var(--primary-color)'">✨ PROMO</span>
+                  <h3>{{ promo.title }}</h3>
+                  @if (promo.subtitle) {
+                    <p>{{ promo.subtitle }}</p>
+                  }
+                  <a [routerLink]="promo.link || '/categories'" class="promo-btn">{{ promo.buttonText || 'Explore Now' }} →</a>
+                </div>
+                <img [src]="promo.webImageUrl || promo.imageUrl" [alt]="promo.title" class="promo-bg-img" />
               </div>
-              <img src="/assets/banners/hero_fresh_fruits.jpg" alt="Organic Fresh Fruits" class="promo-bg-img" />
-            </div>
-
-            <div class="promo-card promo-dairy">
-              <div class="promo-content">
-                <span class="promo-pill gold">🥛 PURE & UNADULTERATED</span>
-                <h3>Morning Milk, Sourdough Bread & Butter</h3>
-                <p>Amul, Mother Dairy & fresh bakery loaves delivered in 10 mins.</p>
-                <a routerLink="/categories" class="promo-btn">Shop Dairy →</a>
-              </div>
-              <img src="/assets/banners/hero_dairy_breakfast.jpg" alt="Breakfast & Dairy" class="promo-bg-img" />
-            </div>
+            }
           </div>
         </div>
       </section>
 
       <!-- 6. Trending Groceries & Bestsellers Grid -->
-      <section class="section-row bestsellers-row">
+      <section class="section-row bestsellers-row" appScrollReveal>
         <div class="container">
           <div class="section-heading">
             <div>
@@ -133,14 +138,14 @@ import { HomepageSection } from '../../core/models/category.model';
 
           @if (isLoadingProducts()) {
             <div class="products-skeleton-grid">
-              @for (n of [1,2,3,4,5,6,7,8]; track n) {
+              @for (n of [1,2,3,4,5,6,7,8,9,10,11,12]; track n) {
                 <div class="product-skeleton-card skeleton"></div>
               }
             </div>
           } @else {
             <div class="products-grid">
-              @for (prod of bestsellers(); track prod._id) {
-                <app-product-card [product]="prod"></app-product-card>
+              @for (prod of bestsellers(); track prod._id; let i = $index) {
+                <app-product-card [product]="prod" class="stagger-enter" [style.animation-delay.ms]="i * 50"></app-product-card>
               }
             </div>
           }
@@ -156,6 +161,7 @@ export class HomeComponent implements OnInit {
   flashDeals = signal<Product[]>([]);
   bestsellers = signal<Product[]>([]);
   dynamicSections = signal<HomepageSection[]>([]);
+  promoBanners = signal<any[]>([]);
   isLoadingProducts = signal<boolean>(true);
 
   // Live Countdown Signals
@@ -163,11 +169,38 @@ export class HomeComponent implements OnInit {
   minutes = signal<string>('45');
   seconds = signal<string>('18');
 
+  activeOrder = signal<any>(null);
   private timerInterval: any;
+  private orderPollInterval: any;
 
   ngOnInit(): void {
     this.startCountdown();
     this.loadData();
+    this.pollActiveOrder();
+  }
+
+  ngOnDestroy(): void {
+    if (this.timerInterval) clearInterval(this.timerInterval);
+    if (this.orderPollInterval) clearInterval(this.orderPollInterval);
+  }
+
+  private pollActiveOrder(): void {
+    const fetchOrder = () => {
+      // Mock or fetch active order, using 'active' as a placeholder ID
+      this.apiService.getOrderById('active').subscribe({
+        next: (order) => {
+          if (order && order.status !== 'DELIVERED') {
+            this.activeOrder.set(order);
+          } else {
+            this.activeOrder.set(null);
+          }
+        },
+        error: () => this.activeOrder.set(null)
+      });
+    };
+    
+    fetchOrder();
+    this.orderPollInterval = setInterval(fetchOrder, 30000); // 30s poll
   }
 
   private startCountdown(): void {
@@ -191,8 +224,8 @@ export class HomeComponent implements OnInit {
     this.apiService.getProducts({ limit: 40 }).subscribe({
       next: (products) => {
         if (products && products.length > 0) {
-          this.flashDeals.set(products.slice(0, 4));
-          this.bestsellers.set(products.slice(4, 16));
+          this.flashDeals.set(products.slice(0, 6));
+          this.bestsellers.set(products.slice(6, 18));
         }
         this.isLoadingProducts.set(false);
       },
@@ -210,6 +243,11 @@ export class HomeComponent implements OnInit {
           );
         }
       }
+    });
+
+    // 3. Load PROMO Banners
+    this.apiService.getBanners().subscribe(banners => {
+      this.promoBanners.set(banners.filter(b => b.bannerType === 'PROMO'));
     });
   }
 

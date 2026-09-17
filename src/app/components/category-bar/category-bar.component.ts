@@ -34,8 +34,8 @@ import { Category } from '../../core/models/category.model';
             </div>
           } @else {
             <div class="categories-grid">
-              @for (cat of categories(); track cat._id) {
-                <a [routerLink]="['/category', cat._id]" class="category-card">
+              @for (cat of categories(); track cat._id; let i = $index) {
+                <a [routerLink]="['/category', cat._id]" class="category-card stagger-enter" [style.animation-delay.ms]="i * 40">
                   <div class="category-image-wrap">
                     <img
                       [src]="cat.image || 'https://cdn-icons-png.flaticon.com/512/3724/3724720.png'"

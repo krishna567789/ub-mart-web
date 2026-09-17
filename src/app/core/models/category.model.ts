@@ -26,7 +26,12 @@ export interface SubCategory {
 export interface Banner {
   _id: string;
   title: string;
-  image: string;
+  imageUrl: string; // Mobile image
+  webImageUrl?: string;
+  subtitle?: string;
+  buttonText?: string;
+  bannerType?: 'HERO' | 'PROMO';
+  themeColor?: string;
   link?: string;
   isActive?: boolean;
   order?: number;

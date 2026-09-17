@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -265,6 +265,35 @@ export class CartDrawerComponent {
   isCheckoutModalOpen = signal<boolean>(false);
   isPlacingOrder = signal<boolean>(false);
   selectedPayment = signal<string>('upi');
+
+  private hasFiredConfetti = false;
+
+  constructor() {
+    effect(() => {
+      const shortfall = this.cartService.freeDeliveryShortfall();
+      const isOpen = this.cartService.isDrawerOpen();
+      if (shortfall === 0 && isOpen && !this.hasFiredConfetti) {
+        this.fireConfetti();
+        this.hasFiredConfetti = true;
+      } else if (shortfall > 0) {
+        this.hasFiredConfetti = false;
+      }
+    });
+  }
+
+  private fireConfetti(): void {
+    if (typeof document === 'undefined') return;
+    for (let i = 0; i < 40; i++) {
+      const conf = document.createElement('div');
+      conf.classList.add('confetti-piece');
+      conf.style.left = Math.random() * 100 + 'vw';
+      conf.style.animationDelay = Math.random() * 0.4 + 's';
+      conf.style.animationDuration = (Math.random() * 1.5 + 1) + 's';
+      conf.style.backgroundColor = ['#ff3b30', '#25d366', '#ff9800', '#007aff', '#ffcc00', '#9c27b0'][Math.floor(Math.random() * 6)];
+      document.body.appendChild(conf);
+      setTimeout(() => conf.remove(), 3000);
+    }
+  }
 
   closeDrawer(): void {
     this.cartService.toggleDrawer(false);

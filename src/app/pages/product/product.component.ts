@@ -35,6 +35,7 @@ import { Product, ProductVariant, getProductImage, getVariantPackSize, getVarian
                   [src]="activeDisplayImage()"
                   [alt]="product()!.name"
                   class="main-img"
+                  [style.view-transition-name]="'product-image-' + product()!._id"
                   (error)="handleImageError($event)"
                 />
                 <span class="veg-badge" [class.veg]="isVeg()" [class.non-veg]="!isVeg()"></span>
@@ -127,30 +128,38 @@ import { Product, ProductVariant, getProductImage, getVariantPackSize, getVarian
                 </div>
               </div>
 
-              <!-- Why Shop On UB Mart -->
-              <div class="express-promise-box">
-                <div class="promise-item">
-                  <div class="promise-icon">🛵</div>
-                  <div class="promise-text">
-                    <strong>10-Minute Doorstep Fulfillment</strong>
-                    <span>Dispatched instantly from your local Gomti Nagar darkstore.</span>
-                  </div>
-                </div>
-                <div class="promise-item">
-                  <div class="promise-icon">🌱</div>
-                  <div class="promise-text">
-                    <strong>100% Quality Assurance Guarantee</strong>
-                    <span>Sealed in tamper-proof bags. Direct farm sourcing.</span>
-                  </div>
-                </div>
-                <div class="promise-item">
-                  <div class="promise-icon">🛡️</div>
-                  <div class="promise-text">
-                    <strong>Zero-Hassle Return on Spot</strong>
-                    <span>No questions asked. Instant refund if unsatisfied.</span>
-                  </div>
-                </div>
+              <!-- Why Shop From UB Mart -->
+              <div class="info-section">
+                <h3 class="section-title">Why shop from UB Mart?</h3>
+                <ul class="why-shop-list">
+                  <li>
+                    <span class="list-icon">⚡</span>
+                    <div class="list-text">
+                      <strong>Superfast Delivery</strong>
+                      <p>Get your order delivered to your doorstep at the earliest from dark stores near you.</p>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="list-icon">🛡️</span>
+                    <div class="list-text">
+                      <strong>Best Prices & Offers</strong>
+                      <p>Best price destination with offers directly from the manufacturers.</p>
+                    </div>
+                  </li>
+                </ul>
               </div>
+
+              <!-- Product Tags (SEO keywords) -->
+              @if (product()!.tags && product()!.tags!.length > 0) {
+                <div class="info-section tags-section">
+                  <h3 class="section-title">Tags</h3>
+                  <div class="tags-row">
+                    @for (tag of product()!.tags; track tag) {
+                      <span class="tag-pill">{{ tag }}</span>
+                    }
+                  </div>
+                </div>
+              }
 
               <!-- Product Specifications Table (Same as Mobile App) -->
               <div class="specs-card">

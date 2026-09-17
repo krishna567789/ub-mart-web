@@ -81,11 +81,11 @@
 
 /* Live GPS Map Card */
 .live-map-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 24px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-light);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
@@ -114,7 +114,7 @@
   font-family: 'Outfit', sans-serif;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #111418;
+  color: var(--text-main);
 }
 
 .speed-pill {
@@ -128,10 +128,10 @@
 }
 
 .map-viewport {
-  background: #f8fafc;
+  background: var(--bg-surface);
   border-radius: 16px;
   padding: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border-light);
   overflow: hidden;
 }
 
@@ -170,11 +170,11 @@
 
 /* OTP Card */
 .otp-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 24px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-light);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
@@ -198,7 +198,7 @@
 
 .otp-title small {
   font-size: 0.78rem;
-  color: #657786;
+  color: var(--text-muted);
   margin-top: 2px;
 }
 
@@ -218,7 +218,7 @@
 
 .pin-digit {
   flex: 1;
-  background: #f4f8f4;
+  background: var(--bg-surface);
   border: 2px solid #0c831f;
   border-radius: 12px;
   padding: 12px 0;
@@ -231,10 +231,10 @@
 
 /* Timeline */
 .timeline-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 28px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-light);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
@@ -243,6 +243,7 @@
   font-size: 1.25rem;
   font-weight: 800;
   margin-bottom: 24px;
+  color: var(--text-main);
 }
 
 .timeline-steps {
@@ -282,30 +283,30 @@
 }
 
 .step-item.pending .step-icon {
-  background: #f1f4f8;
-  color: #8899a6;
+  background: var(--bg-subtle);
+  color: var(--text-muted);
 }
 
 .step-name {
   font-family: 'Outfit', sans-serif;
   font-size: 0.98rem;
   font-weight: 700;
-  color: #111418;
+  color: var(--text-main);
 }
 
 .step-time {
   font-size: 0.8rem;
-  color: #657786;
+  color: var(--text-muted);
   margin-top: 2px;
 }
 
 /* Rider Card */
 .rider-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-light);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
@@ -331,7 +332,7 @@
   font-family: 'Outfit', sans-serif;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #111418;
+  color: var(--text-main);
 }
 
 .rider-badge {
@@ -343,9 +344,9 @@
 
 .rider-vehicle {
   font-size: 0.82rem;
-  color: #657786;
+  color: var(--text-muted);
   padding: 8px 12px;
-  background: #f8fafc;
+  background: var(--bg-surface);
   border-radius: 10px;
   margin-bottom: 16px;
 }
@@ -367,11 +368,11 @@
 
 /* Address Card */
 .address-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-light);
 }
 
 .addr-title {
@@ -379,18 +380,19 @@
   font-size: 0.95rem;
   font-weight: 800;
   margin-bottom: 8px;
+  color: var(--text-main);
 }
 
 .addr-text {
   font-size: 0.85rem;
-  color: #555;
+  color: var(--text-muted);
   line-height: 1.4;
   margin-bottom: 10px;
 }
 
 .landmark-pill {
   display: inline-block;
-  background: #f1f4f8;
+  background: var(--bg-surface);
   padding: 4px 10px;
   border-radius: 8px;
   font-size: 0.78rem;

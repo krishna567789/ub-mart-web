@@ -1,8 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, of, catchError, map } from 'rxjs';
+import { Observable, of, catchError, map, tap } from 'rxjs';
 import { Product } from '../models/product.model';
 import { Category, MainCategory, SubCategory, Banner, HomepageSection } from '../models/category.model';
+import { AppSettings } from '../models/settings.model';
+import { Order } from '../models/order.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,30 +24,47 @@ export class ApiService {
     });
   }
 
+  // Simple in-memory cache to prevent layout thrashing on route navigation
+  private apiCache = new Map<string, any>();
+
+  // Settings
+  getSettings(): Observable<AppSettings | null> {
+    return this.http.get<AppSettings>(`${this.baseUrl}/settings`, { headers: this.getHeaders() }).pipe(
+      catchError(err => {
+        console.warn('API getSettings error:', err);
+        return of(null);
+      })
+    );
+  }
+
   // Banners
   getBanners(): Observable<Banner[]> {
+    const cacheKey = 'banners';
+    if (this.apiCache.has(cacheKey)) return of(this.apiCache.get(cacheKey));
+
     return this.http.get<Banner[]>(`${this.baseUrl}/banners`, { headers: this.getHeaders() }).pipe(
+      tap(data => this.apiCache.set(cacheKey, data)),
       catchError(err => {
         console.warn('API getBanners error, fallback to curated banners:', err);
         return of([
           {
             _id: 'b1',
             title: '10-Minute Lightning Grocery Delivery',
-            image: '/assets/banners/hero_express_delivery.jpg',
+            imageUrl: '/assets/banners/hero_express_delivery.jpg',
             isActive: true,
             order: 1
           },
           {
             _id: 'b2',
             title: 'Farm Fresh Organic Fruits & Crisp Vegetables',
-            image: '/assets/banners/hero_fresh_fruits.jpg',
+            imageUrl: '/assets/banners/hero_fresh_fruits.jpg',
             isActive: true,
             order: 2
           },
           {
             _id: 'b3',
             title: 'Morning Breakfast & Pure Dairy Essentials',
-            image: '/assets/banners/hero_dairy_breakfast.jpg',
+            imageUrl: '/assets/banners/hero_dairy_breakfast.jpg',
             isActive: true,
             order: 3
           }
@@ -56,7 +75,11 @@ export class ApiService {
 
   // Categories
   getCategories(): Observable<Category[]> {
+    const cacheKey = 'categories';
+    if (this.apiCache.has(cacheKey)) return of(this.apiCache.get(cacheKey));
+
     return this.http.get<Category[]>(`${this.baseUrl}/categories`, { headers: this.getHeaders() }).pipe(
+      tap(data => this.apiCache.set(cacheKey, data)),
       catchError(err => {
         console.warn('API getCategories error:', err);
         return of([]);
@@ -86,6 +109,9 @@ export class ApiService {
 
   // Products
   getProducts(query?: { categoryId?: string; subCategoryId?: string; search?: string; limit?: number }): Observable<Product[]> {
+    const cacheKey = 'products_' + JSON.stringify(query || {});
+    if (this.apiCache.has(cacheKey)) return of(this.apiCache.get(cacheKey));
+
     let params = new HttpParams();
     if (query?.categoryId) params = params.set('category', query.categoryId);
     if (query?.subCategoryId) params = params.set('subCategory', query.subCategoryId);
@@ -93,6 +119,7 @@ export class ApiService {
     if (query?.limit) params = params.set('limit', query.limit.toString());
 
     return this.http.get<Product[]>(`${this.baseUrl}/products`, { headers: this.getHeaders(), params }).pipe(
+      tap(data => this.apiCache.set(cacheKey, data)),
       catchError(err => {
         console.warn('API getProducts error:', err);
         return of([]);
@@ -112,7 +139,11 @@ export class ApiService {
 
   // Homepage Sections
   getHomepageSections(): Observable<HomepageSection[]> {
+    const cacheKey = 'homepage_sections';
+    if (this.apiCache.has(cacheKey)) return of(this.apiCache.get(cacheKey));
+
     return this.http.get<HomepageSection[]>(`${this.baseUrl}/homepage`, { headers: this.getHeaders() }).pipe(
+      tap(data => this.apiCache.set(cacheKey, data)),
       catchError(err => {
         console.warn('API getHomepageSections error:', err);
         return of([]);
@@ -121,8 +152,8 @@ export class ApiService {
   }
 
   // Order Details
-  getOrderById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/orders/${id}`, { headers: this.getHeaders() }).pipe(
+  getOrderById(id: string): Observable<Order | null> {
+    return this.http.get<Order>(`${this.baseUrl}/orders/${id}`, { headers: this.getHeaders() }).pipe(
       catchError(err => {
         console.warn(`API getOrderById ${id} error:`, err);
         return of(null);

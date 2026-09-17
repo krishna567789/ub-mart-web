@@ -24,7 +24,11 @@ import { ToastService } from '../../core/services/toast.service';
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </button>
-          <span class="badge-delivery">⚡ 10 MINS</span>
+          @if (product.badge) {
+            <span class="badge-delivery badge-custom">{{ product.badge }}</span>
+          } @else {
+            <span class="badge-delivery">⚡ 10 MINS</span>
+          }
         </div>
       </div>
 
@@ -36,6 +40,7 @@ import { ToastService } from '../../core/services/toast.service';
             [alt]="product.name"
             class="product-img"
             loading="lazy"
+            [style.view-transition-name]="'product-image-' + product._id"
             (error)="handleImageError($event)"
           />
         </div>
@@ -56,9 +61,19 @@ import { ToastService } from '../../core/services/toast.service';
         }
       </div>
 
-      <!-- Product Title -->
+      <!-- Product Brand & Title -->
       <a [routerLink]="['/product', product._id]" class="product-title-link">
+        @if (product.brand) {
+          <span class="product-brand">{{ product.brand }}</span>
+        }
         <h3 class="product-title" [title]="product.name">{{ product.name }}</h3>
+        @if (product.rating && product.reviewCount) {
+          <div class="product-rating">
+            <span class="star">★</span>
+            <span class="rating-val">{{ product.rating }}</span>
+            <span class="rating-count">({{ product.reviewCount }})</span>
+          </div>
+        }
       </a>
 
       <!-- Bottom Price & Add Action Row -->

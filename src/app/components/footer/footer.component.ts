@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ThemeService } from '../../core/services/theme.service';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [RouterLink],
+  imports: [CommonModule, RouterLink],
   template: `
     <footer class="footer-root">
       <div class="container">
@@ -80,7 +82,7 @@ import { RouterLink } from '@angular/router';
             <div class="support-box">
               <div class="support-item">
                 <span class="support-label">Customer Helpline:</span>
-                <span class="support-val">+91 98765 43210</span>
+                <span class="support-val">{{ (themeService.settings$ | async)?.storePhone || '+91 98765 43210' }}</span>
               </div>
               <div class="support-item">
                 <span class="support-label">Support Email:</span>
@@ -114,4 +116,6 @@ import { RouterLink } from '@angular/router';
   `,
   styleUrls: ['./footer.component.css']
 })
-export class FooterComponent {}
+export class FooterComponent {
+  themeService = inject(ThemeService);
+}

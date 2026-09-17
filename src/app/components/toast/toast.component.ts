@@ -48,7 +48,7 @@ import { ToastService } from '../../core/services/toast.service';
     }
 
     .toast-card.success {
-      border-left: 4px solid #0c831f;
+      border-left: 4px solid var(--primary-color);
     }
 
     .toast-card.warning {
